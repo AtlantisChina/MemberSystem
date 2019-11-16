@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="com.atlantis.dao.LogMapper">
+	<select id="selAllLogByPage" parameterType="pageinfo"
+		resultType="log">
+		select * from log
+		GROUP BY date DESC
+		limit
+		#{pageStart},#{pageSize}
+	</select>
+
+	<select id="selCountLogByAll" resultType="long">
+		select count(*) from
+		log
+	</select>
+
+	<insert id="addLog" parameterType="log">
+		INSERT INTO
+		log(type,content,operator,ip,date)
+		VALUES(#{type},#{content},#{operator},#{ip},now())
+	</insert>
+
+	<delete id="delLog" parameterType="int">
+		DELETE FROM log WHERE
+		id=#{0}
+	</delete>
+	
+	<!-- 会员注册数量 -->
+	<select id="countMember" parameterType="string" resultType="Integer">
+		select count(*) from member
+		<where>
+			<if test="_parameter == 'today'">
+				DATEDIFF(date,NOW())=0
+			</if>
+			<if test="_parameter == 'yesday'">
+				DATEDIFF(date,NOW())=-1
+			</if>
+			<if test="_parameter == 'week'">
+				YEARWEEK(date_format(date,'%Y-%m-%d')) = YEARWEEK(now())
+			</if>
+			<if test="_parameter == 'month'">
+				DATE_FORMAT(date,'%Y%m')=DATE_FORMAT(CURDATE(),'%Y%m')
+			</if>
+			<if test="_parameter == 'lastmonth'">
+				PERIOD_DIFF(date_format(now(
+				),'%Y%m'),date_format(date,'%Y%m'))=1
+			</if>
+		</where>
+	</select>
+
+	<!-- 消费金额 -->
+	<select id="countRecord1Money" parameterType="string" resultType="Float">
+		select SUM(changemoney) from record
+		<where>
+			<if test="_parameter == 'today'">
+				DATEDIFF(recorddate,NOW())=0
+			</if>
+			<if test="_parameter == 'yesday'">
+				DATEDIFF(recorddate,NOW())=-1
+			</if>
+			<if test="_parameter == 'week'">
+				YEARWEEK(date_format(recorddate,'%Y-%m-%d')) =
+				YEARWEEK(now())
+			</if>
+			<if test="_parameter == 'month'">
+				DATE_FORMAT(recorddate,'%Y%m')=DATE_FORMAT(CURDATE(),'%Y%m')
+			</if>
+			<if test="_parameter == 'lastmonth'">
+				PERIOD_DIFF(date_format(now(
+				),'%Y%m'),date_format(recorddate,'%Y%m'))=1
+			</if>
+			and recordtype='消费'
+		</where>
+	</select>
+
+	<!-- 充值金额 -->
+	<select id="countRecord0Money" parameterType="string" resultType="Float">
+		select SUM(changemoney) from record
+		<where>
+			<if test="_parameter == 'today'">
+				DATEDIFF(recorddate,NOW())=0
+			</if>
+			<if test="_parameter == 'yesday'">
+				DATEDIFF(recorddate,NOW())=-1
+			</if>
+			<if test="_parameter == 'week'">
+				YEARWEEK(date_format(recorddate,'%Y-%m-%d')) =
+				YEARWEEK(now())
+			</if>
+			<if test="_parameter == 'month'">
+				DATE_FORMAT(recorddate,'%Y%m')=DATE_FORMAT(CURDATE(),'%Y%m')
+			</if>
+			<if test="_parameter == 'lastmonth'">
+				PERIOD_DIFF(date_format(now(
+				),'%Y%m'),date_format(recorddate,'%Y%m'))=1
+			</if>
+			and recordtype='充值'
+		</where>
+	</select>
+
+	<!-- 消费次数 -->
+	<select id="countRecord1" parameterType="string" resultType="Integer">
+		select count(*) from record
+		<where>
+			<if test="_parameter == 'today'">
+				DATEDIFF(recorddate,NOW())=0
+			</if>
+			<if test="_parameter == 'yesday'">
+				DATEDIFF(recorddate,NOW())=-1
+			</if>
+			<if test="_parameter == 'week'">
+				YEARWEEK(date_format(recorddate,'%Y-%m-%d')) =
+				YEARWEEK(now())
+			</if>
+			<if test="_parameter == 'month'">
+				DATE_FORMAT(recorddate,'%Y%m')=DATE_FORMAT(CURDATE(),'%Y%m')
+			</if>
+			<if test="_parameter == 'lastmonth'">
+				PERIOD_DIFF(date_format(now(
+				),'%Y%m'),date_format(recorddate,'%Y%m'))=1
+			</if>
+			and recordtype='消费'
+		</where>
+	</select>
+	
+	<!-- 充值次数 -->
+	<select id="countRecord0" parameterType="string" resultType="Integer">
+		select count(*) from record
+		<where>
+			<if test="_parameter == 'today'">
+				DATEDIFF(recorddate,NOW())=0
+			</if>
+			<if test="_parameter == 'yesday'">
+				DATEDIFF(recorddate,NOW())=-1
+			</if>
+			<if test="_parameter == 'week'">
+				YEARWEEK(date_format(recorddate,'%Y-%m-%d')) =
+				YEARWEEK(now())
+			</if>
+			<if test="_parameter == 'month'">
+				DATE_FORMAT(recorddate,'%Y%m')=DATE_FORMAT(CURDATE(),'%Y%m')
+			</if>
+			<if test="_parameter == 'lastmonth'">
+				PERIOD_DIFF(date_format(now(
+				),'%Y%m'),date_format(recorddate,'%Y%m'))=1
+			</if>
+			and recordtype='充值'
+		</where>
+	</select>
+
+</mapper>
+ 

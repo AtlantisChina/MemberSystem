@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"  
+	xmlns:jee="http://www.springframework.org/schema/jee" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<!-- 向Spring容器注册(自动注入)以下四个BeanPostProcessor: 即可使用注解方式
+		1.AutowiredAnnotationBeanPostProcessor. @Autowired注解
+		2.CommonAnnotationBeanPostProcessor. @Resource,@PostConstruct,@PreDestroy 注解
+		3.PersistenceAnnotationBeanPostProcessor. @PersistenceContext 注解
+		4.RequiredAnnotationBeanPostProcessor. @Required 注解  
+		 -->
+	<!-- spring默认配置 ：自动识别上述内容中的相应注释-->
+	<context:annotation-config />	
+	
+	<!-- <context:annotation-config/>与<context:component-scan base-package=”xx.xx”/>
+		两者作用相似,如果两者都进行了配置，则只有前者有效。 -->
+	
+	<!-- 手动配置,指定扫描注解路径：service层 -->
+	<context:component-scan base-package="com.atlantis.service" />
+	
+	<!-- ================================================================================ -->
+
+	<!-- 读取数据库配置属性文件mysql.properties -->
+	<util:properties id="jdbc" location="classpath:mysql.properties"></util:properties>
+
+	<!-- 加载数据源 -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="url" value="#{jdbc.url}"></property>
+		<property name="username" value="#{jdbc.user}"></property>
+		<property name="password" value="#{jdbc.password}"></property>
+		<property name="driverClassName" value="#{jdbc.driver}"></property>
+	</bean>
+	
+	<!-- ================================================================================ -->
+	
+	<!-- 整合MyBatis session 工厂 -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 连接数据库 -->
+		<property name="dataSource" ref="dataSource" />
+		<!-- 加载Mybatis配置文件 -->
+		<property name="configLocation" value="classpath:MyBatis.xml"></property>
+		<!-- 定义映射文件 -->
+		<property name="mapperLocations" value="classpath:com/atlantis/mapper/*.xml" />
+	</bean>
+	
+	<!-- ================================================================================ -->
+
+	<!-- 配置扫描指定包下的映射接口 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.atlantis.dao" />
+	</bean>
+</beans>

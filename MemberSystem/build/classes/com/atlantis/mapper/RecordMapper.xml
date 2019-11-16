@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atlantis.dao.RecordMapper">
+	<select id="selByid" parameterType="int" resultType="Record">
+		select * from record where id=#{0}
+	</select>
+	
+	<select id="selRecordByPage" parameterType="pageinfo"
+		resultType="Record">
+		select * from record
+		<where>
+			<!-- 查询条件不为空时 -->
+			<if test="searchText!=null and searchText!=''">
+				and recordtype=#{searchText}
+			</if>
+			<if test="dateMin!=null and dateMin!=''">
+				and recorddate &gt;= #{dateMin}
+			</if>
+			<if test="dateMax!=null and dateMax!=''">
+				and recorddate &lt;= #{dateMax}
+			</if>
+			<!-- 查询条件为空时,默认 查询全部 -->
+		</where>
+		GROUP BY recorddate DESC
+		limit #{pageStart},#{pageSize}
+	</select>
+
+	<select id="selCountRecordByAll" parameterType="pageinfo"
+		resultType="long">
+		select count(*) from record
+		<where>
+			<!-- 查询条件不为空时 -->
+			<if test="searchText!=null and searchText!=''">
+				and recordtype=#{searchText}
+			</if>
+			<if test="dateMin!=null and dateMin!=''">
+				and recorddate &gt;= #{dateMin}
+			</if>
+			<if test="dateMax!=null and dateMax!=''">
+				and recorddate &lt;= #{dateMax}
+			</if>
+			<!-- 查询条件为空时,默认 查询全部 -->
+		</where>
+	</select>
+
+	<select id="selAllRecordForMember" parameterType="pageinfo"
+		resultType="Record">
+		select * from record
+		<where>
+			memberid = #{memberid}
+		</where>
+		GROUP BY recorddate DESC
+		limit #{pageStart},#{pageSize}
+	</select>
+
+	<select id="selCountAllRecordForMember" parameterType="pageinfo"
+		resultType="long">
+		select count(*) from record
+		<where>
+			memberid = #{memberid}
+		</where>
+	</select>
+
+	<insert id="addRecord" parameterType="Record">
+		INSERT INTO
+		record(memberid,recorddate,recordtype,changemoney,remarks)
+		VALUES(#{memberid},#{recorddate},#{recordtype},#{changemoney},#{remarks})
+	</insert>
+
+	<delete id="delRecord" parameterType="int">
+		DELETE FROM record WHERE
+		id=#{0}
+	</delete>
+
+	<update id="updMemberMoneyForRecord" parameterType="Member">
+		update member
+		<set>
+			money = #{money}
+		</set>
+		where id = #{id}
+	</update>
+	
+	<update id="updRecord" parameterType="Record">
+		update record
+		<set>
+			recorddate=#{recorddate},
+			remarks=#{remarks}
+		</set>
+		where id=#{id}
+	</update>
+	
+</mapper>
+ 

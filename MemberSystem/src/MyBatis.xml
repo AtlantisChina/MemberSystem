@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<!-- 控制 mybatis全局开关 -->
+	<settings>
+		<!-- 开启 log4j -->
+		<setting name="logImpl" value="LOG4J" />
+	</settings>
+	
+	<!-- typeAliases 别名; -->
+	<!-- 系统内置别名: 把类型全小写 -->	
+	<typeAliases>
+		<!-- 给某个类起别名：alias=”自定义”,mapper.xml中用alias自定义别名引用-->
+		<typeAlias type="com.atlantis.entity.Member" alias="Member" />
+		<!-- 给某个包下所有类起别名：别名为类名,不区分大小写,mapper.xml中通过类名引用-->
+		<package name="com.atlantis.entity" />
+	</typeAliases>
+
+	<!-- 加载Mapper.xml文件 :只可存在一种方式-->
+	<mappers>
+		<!-- <mapper resource="com/atlantis/mapper/FlowerMapper.xml" />	 -->	
+		<!-- 使用Mybatis接口绑定方案时使用下面配置 -->
+		<package name="com.atlantis.mapper"/>
+	</mappers>
+
+</configuration> 
